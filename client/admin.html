@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="css/admin.css">
+<head>
+	<meta charset="UTF-8">
+	<title>Admin</title>
+</head>
+<body>
+	<h1>Welcome Admin</h1>
+
+<div class="content">
+	
+	<textarea name="myPost" id="myPost" cols="30" rows="10" placeholder="Type in your Post here!"></textarea>
+
+	<br>
+	<hr>
+	<input type="text" id="myPostTitle" name="myPostTitle" placeholder="Title" autocomplete="off">
+	<br>
+	<hr>
+	<input type="submit" name="submitMyPost" id='submitMyPost' value="Submit Post">
+	<div id="submitPostFeedback"></div>
+
+</div>
+
+<div class="rightSide">
+	
+<h3>recent posts</h3>
+<ul id='postTitles'></ul>
+
+
+
+
+
+</div>
+
+
+
+<div class="footer">
+	
+	<br>
+	<hr>
+	<hr>
+	<hr>
+		<a href="/logout">Logout</a>
+</div>
+<script src="js/jq.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+.content{
+	float:left;
+	display: inline-block;
+}
+
+.footer{
+	border: 1px solid red;
+	/*display: flex*/;
+	/*flex-direction: column;*/
+	/*height: 100px;*/
+	/*width: 500px;*/
+	width: 100%;
+	position: absolute;
+	bottom: 0px;
+}
+
+.rightSide{
+float: left;
+	margin-left: 40px; 
+	margin-right: 50px;
+	border: 1px solid green;
+}
+
+#error{
+	color:red;
+}
+#success{
+	color:green;
+}
+
+li{
+	list-style: none;
+	margin-left: -40px;
+}
+
+.small{
+	font-size: 8px;
+}
+
+.postTitleList{
+	text-decoration: underline;
+	cursor: pointer;
+}
