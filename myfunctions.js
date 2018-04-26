@@ -1,7 +1,9 @@
 module.exports = {
 
-	verifyUserLogedIn:function(res){
-		if(!userSession.loggedIn) {
+	verifyUserLogedIn:function(req, res){
+		console.log('userSession.loggedIn')
+		console.log(req.session.loggedIn)
+		if(!req.session.loggedIn) {
 		res.redirect('/')
 		}else{
 			return true
@@ -41,9 +43,9 @@ module.exports = {
 		},
 	userLogout:function(req, res){
 		console.log('/getlogut============================================================')
-		console.log("My userSession userName "+userSession.userName)
-		delete userSession.userName 
-		console.log("My userSession userName "+userSession.userName)
+		console.log("My userSession userName "+userSession.username)
+		delete userSession.username 
+		console.log("My userSession userName "+userSession.username)
 		req.session.loggedIn = false
 		delete req.session.userName
 		userSession.loggedIn = false

@@ -19,18 +19,18 @@ database.sayHelloInEnglish();
 database.sayHelloInSpanish();
 
 
-var options = {
-    key: fs.readFileSync('key.pem'),
-    cert: fs.readFileSync('cert.pem'),
+// var options = {
+//     key: fs.readFileSync('key.pem'),
+//     cert: fs.readFileSync('cert.pem'),
 
-};
+// };
 
 
 var app = express()
 
     https.createServer({
-      key: fs.readFileSync('key.pem'),
-      cert: fs.readFileSync('cert.pem')
+      key: fs.readFileSync('./privKeys/key.pem'),
+      cert: fs.readFileSync(__dirname+'/privKeys/cert.pem')
     }, app).listen(443);
 
 
@@ -47,8 +47,10 @@ app.use(sessions({
 	resave: false,
 	saveUninitialized:false,
 	cookie:{
-		secure:true,
-		maxAge: 60000	}
+		 secure:false,
+		 httpOnly:true,
+		maxAge: 1000*60*60//one hour
+			}
 
 }))//before bodyParser
 
@@ -82,17 +84,15 @@ app.get('/isset', function(req, res){
 
 app.get('/', function(req, res){
 	console.log('/============================================================')
-console.log(req.sessionID)
+console.log('COOKIES STROED __ID!!')
+console.log(req.cookies.sessionID)
+// database.findSessionInDB(req.cookies.sessionID)
+
 if(req.session.id){
 	console.log('got an ID '+req.session.id)
 }else{
 	console.log('got no ID ='+req.session.id)
 }
-
-
-
-
-	// console.log('this wrks')
 	// console.log('req.query')
 	// console.log(req.query)
 	// console.log('req.params')
@@ -101,21 +101,20 @@ if(req.session.id){
 	// console.log(req.body)
 	// console.log('req.route')
 	// console.log(req.route)
-
-
-
 	// console.log('req.protocol')
 	// console.log(req.protocol)
 	// console.log('req.ip')
 	// console.log(req.ip)
-	res.cookie('Maui' , 'Makers', {expire : new Date() + 1000})
+	res.cookie('Maui1' , 'rakers', {expire : new Date() + 1000*10})
+	res.cookie('Maui' , 'rakers2')
 	console.log('session -------------------------')
 	console.log(req.session)
 	console.log('Cookies!!!______________________')
-	console.log(req.cookies)
+	console.log(req.cookies['connect.sid'])
 	console.log('response set cookie header  :  '+res.get('set-cookie'))
 	// res.send('cookies '+req.cookies+" : "+req.session)
 	// res.write('This is Dave')
+	// req.session.loggedin = true
 
 	res.sendFile(__dirname+'/client/index.html')
 
@@ -125,7 +124,7 @@ if(req.session.id){
 app.get('/login', function(req, res){
 		console.log('/getlogin============================================================')
 
-	if(userSession.loggedIn){
+	if(req.session.loggedIn){
 
 		res.redirect('/admin')
 		console.log('response admin set cookie header  :  '+res.get('set-cookie'))
@@ -142,13 +141,20 @@ app.post('/login', function(req, res){
 	if(req.body.username == 'admin' &&req.body.password == 'admin'){
 		req.session.loggedIn = true
 		req.session.username = req.body.username
-		userSession.loggedIn = true
-		userSession.username = req.body.username
-		database.writeToMongo('admin', {
-						'firstname':userSession.username,
-						 'lastname':'barrar',
-						 'loginTime':new Date()
-						})
+		res.cookie('sessionID',req.session.id)
+		database.writeToMongo('userSessions', {'username':req.body.username ,'sessionid':req.session.id})
+database.readFromMongo('admin', function(cursorArray){
+	console.log('cursorArray')
+	console.log('number of results '+cursorArray.length)
+	console.log(cursorArray)
+})
+
+		// database.writeToMongo('admin', {
+		// 				'firstname':userSession.username,
+		// 				'session': req.session.id,
+		// 				 'lastname':'barrar',
+		// 				 'loginTime':new Date()
+		// 				})
 		res.redirect('/admin')
 		console.log('response set cookie header login form post/login redir /admin:  '+res.get('set-cookie'))
 
@@ -161,7 +167,9 @@ app.post('/login', function(req, res){
 })
 
 app.get('/admin', function(req, res){
-	myFunctions.verifyUserLogedIn(res)
+	myFunctions.verifyUserLogedIn(req, res)
+	console.log('get /admin')
+	console.log(req.cookies['connect.sid'])
 	res.sendFile(__dirname+'/client/admin.html')
 
 })
@@ -173,7 +181,7 @@ app.get('/findPostsFromDB', function(req, res){
 })
 
 app.post('/adminPost', function(req, res){
-	myFunctions.verifyUserLogedIn(res)
+	myFunctions.verifyUserLogedIn(req, res)
 	console.log(req.body)
 	if(!myFunctions.verifyObjNotEmpty(req.body)){
 
@@ -194,9 +202,9 @@ app.get('/logout', function(req, res){
 })
 
 app.use(express.static(__dirname+'/client'))
-app.listen(7777, function(){
-	console.log('Listenign on port 7777 !')
+// app.listen(443, function(){
+// 	console.log('Listenign on port 7777 !')
 
-})
+// })
 
 

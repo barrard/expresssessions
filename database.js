@@ -56,8 +56,29 @@ module.exports = {
 						callback(cursorArray)
 					}
 				})
+			}else{
+				return err
 			}
 		})
+	},
+
+	findSessionInDB:function(collection, reqCookieSession){
+		MongoClient.connect(url, function(err, db){
+			if(!err){
+				var myCollection = db.collection(collection)
+				myCollection.find().toArray(function(err, item){
+					if(!err){
+						console.log(item)
+					}else{
+						return err
+					}
+				})
+			}else{
+				return err
+			}
+		})
+		// this.readFromMongo()
+
 	},
 
 
